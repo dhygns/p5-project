@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> P5 Project (Getting Started) </title>
+    <style>
+    body {
+      overflow : hidden;
+      margin-left : 0px;
+      margin-top : 0px;
+    }
+    </style>
+  </head>
+  <body>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.11/p5.js"></script>
+    <script>
+    class Ball {
+      constructor(scale) {
+        this.scale = scale;
+        this.position = { x : 0, y : 0};
+        this.polarvel = { l : 0, r : 0};
+        this.polarfoc = { l : 0, r : 0};
+      }
+
+      update(dt) {
+
+        this.polarvel.l += this.polarfoc.l * dt;
+        this.polarvel.r += this.polarfoc.r * dt;
+
+        this.polarvel.l = Math.max(this.polarvel.l - dt * 5.0, 0.0);
+
+        this.position.x += this.polarvel.l * Math.sin(this.polarvel.r) * dt;
+        this.position.y += this.polarvel.l * Math.cos(this.polarvel.r) * dt;
+      }
+
+
+      turnleft()  { this.polarfoc.r = -Math.PI * 0.5; }
+      turnright() { this.polarfoc.r = +Math.PI * 0.5; }
+      turncenter() { this.polarfoc.r = 0.0; }
+
+      acc() { this.polarfoc.l = 10.0;}
+      brk() { this.polarfoc.l = 0.0;}
+
+      render() {
+        var px = window.innerWidth / 2 + this.position.x;
+        var py = window.innerHeight / 2 - this.position.y;
+
+        var lx = this.scale * Math.sin(this.polarvel.r + Math.PI * 0.8);
+        var mx = this.scale * Math.sin(this.polarvel.r);
+        var rx = this.scale * Math.sin(this.polarvel.r - Math.PI * 0.8);
+
+        var ly = this.scale * Math.cos(this.polarvel.r + Math.PI * 0.8);
+        var my = this.scale * Math.cos(this.polarvel.r);
+        var ry = this.scale * Math.cos(this.polarvel.r - Math.PI * 0.8);
+
+
+        fill(0);
+        triangle(px + lx, py - ly, px + mx, py - my, px + rx, py - ry);
+        // line(px, py, px + x, py - y);
+      }
+    }
+
+    var PO = undefined;
+    var nt = 0.0, ot = 0.0;
+
+    function setup() {
+      createCanvas(window.innerWidth, window.innerHeight);
+      PO = new Ball(30);
+    }
+
+    function keyPressed() {
+      switch(keyCode) {
+        case UP_ARROW : PO.acc(); break;
+        case LEFT_ARROW : PO.turnleft(); break;
+        case RIGHT_ARROW : PO.turnright(); break;
+        default : console.log(keyCode); break;
+      }
+    }
+
+    function keyReleased() {
+      switch(keyCode) {
+        case UP_ARROW : PO.brk(); break;
+        case LEFT_ARROW : case RIGHT_ARROW : PO.turncenter(); break;
+        default : console.log(keyCode); break;
+      }
+    }
+
+    function draw() {
+      ot = nt;
+      nt = millis() * 0.001;
+      background(255, 255, 255, 5);
+      PO.update(nt - ot);
+      PO.render();
+    }
+
+    </script>
+  </body>
+</html>

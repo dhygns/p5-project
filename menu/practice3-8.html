@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> P5 Project (Getting Started) </title>
+    <style>
+    body {
+      overflow : hidden;
+      margin-left : 0px;
+      margin-top : 0px;
+    }
+    </style>
+  </head>
+  <body>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.11/p5.js"></script>
+    <script>
+
+    class Oscillator {
+      constructor() {
+        this.scale = 50.0;
+        this.position = { x : 0.0, y : 0.0};
+        this.accelate = { x : Math.random() * 50.0 - 25.0, y : Math.random() * 50.0 - 25.0};
+
+        this.velocity = { x : Math.random() * 4.0 - 2.0, y : Math.random() * 4.0 - 2.0};
+        this.amplitude = { x : Math.random() * window.innerWidth/2, y : Math.random() * window.innerHeight/2};
+        this.angle = { x : 0.0, y : 0.0};
+      }
+      update(dt) {
+        this.velocity.x += this.accelate.x * dt - this.velocity.x * this.velocity.x * dt * 0.01;
+        this.velocity.y += this.accelate.y * dt - this.velocity.y * this.velocity.y * dt * 0.01;
+
+        this.angle.x += this.velocity.x * dt;
+        this.angle.y += this.velocity.y * dt;
+
+        this.position.x = Math.sin(this.angle.x) * this.amplitude.x;
+        this.position.y = Math.sin(this.angle.y) * this.amplitude.y;
+
+        var px = window.innerWidth / 2;
+        var py = window.innerHeight / 2;
+        fill(0);
+        ellipse(px + this.position.x, py - this.position.y, this.scale, this.scale);
+      }
+    }
+
+    var PO = undefined;
+    var nt = 0.0, ot = 0.0;
+
+    function setup() {
+      createCanvas(window.innerWidth, window.innerHeight);
+      PO = new Oscillator();
+    }
+
+    function draw() {
+      background(255, 255, 255, 5);
+      ot = nt;
+      nt = millis() * 0.001;
+      PO.update(nt - ot);
+    }
+
+
+    </script>
+  </body>
+</html>

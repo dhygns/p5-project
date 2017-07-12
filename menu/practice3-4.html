@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> P5 Project (Getting Started) </title>
+    <style>
+    body {
+      overflow : hidden;
+      margin-left : 0px;
+      margin-top : 0px;
+    }
+    </style>
+  </head>
+  <body>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/p5.js/0.5.11/p5.js"></script>
+    <script>
+    class Ball {
+      constructor(scale) {
+        this.polarpos = { l : 0, r : 0};
+        this.polarvel = { l : 5, r : 0.3 * Math.PI};
+        this.scale = scale;
+      }
+
+      update(dt) {
+        this.polarpos.r += this.polarvel.r * dt;
+        this.polarpos.l += this.polarvel.l * dt;
+      }
+
+      render() {
+        var px = window.innerWidth / 2;
+        var py = window.innerHeight / 2;
+
+        var x = this.polarpos.l * Math.sin(this.polarpos.r);
+        var y = this.polarpos.l * Math.cos(this.polarpos.r);
+        fill(0);
+        ellipse(x + px, py - y, this.scale, this.scale);
+        // line(px, py, px + x, py - y);
+      }
+    }
+
+    var PO = undefined;
+    var nt = 0.0, ot = 0.0;
+
+    function setup() {
+      createCanvas(window.innerWidth, window.innerHeight);
+      PO = new Ball(30);
+    }
+
+    function draw() {
+      ot = nt;
+      nt = millis() * 0.001;
+      background(255, 255, 255, 5);
+      PO.update(nt - ot);
+      PO.render();
+    }
+
+    </script>
+  </body>
+</html>
